@@ -57,7 +57,7 @@ class Sendmsg extends CI_Controller
 			//返回结果
 			$data['result'] = $dllsms->YhSendSms($this->config->item('mytel'),$data['tel'],$data['content'],8);
 			if ($data['result'] == '-1'){
-				$data['valid'] = 0;
+				$data['valid'] = -1;
 			}else{
 				$data['valid'] = 1;
 			}
@@ -65,12 +65,13 @@ class Sendmsg extends CI_Controller
 			
 			$res = $this->Msms->add_sms($data);
 		}else {
-			$data['result'] = '-2';
+			$data['valid']  = -2;
+			$data['result'] = $open;
 		}
 		//关闭通讯端口
 		$dllsms->YhCloseModem();
-
-		echo $data['result'];
+		
+		echo json_encode(array('valid'=>$data['valid'],'result'=>iconv("GBK", "UTF-8//IGNORE",$data['result'])));
 	}
 
 }
